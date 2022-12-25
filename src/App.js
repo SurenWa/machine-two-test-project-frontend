@@ -1,25 +1,68 @@
-import logo from './logo.svg';
-import './App.css';
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import List from "./pages/List";
+import Single from "./pages/Single";
+import New from "./pages/New";
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+} from "react-router-dom";
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { useContext } from "react";
+import { DarkModeContext } from "./context/darkModeContext";
+import { productInputs, userInputs } from "./formSource";
+import ProtectedRoute from "./utils/ProtectedRoute";
+
+
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const { darkMode } = useContext(DarkModeContext);
+
+    return (
+        // <Register />
+        //<Login />
+        <>  
+            <div className={darkMode ? "app dark" : "app"}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<Login />} />
+                        <Route path="/register" element={<Register />} />  
+                                    
+                        <Route path="/dashboard" element={
+                            <ProtectedRoute>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        } />   
+
+                        <Route path="/users" element={
+                            <ProtectedRoute>
+                                <List />
+                            </ProtectedRoute>
+                        } />  
+                        <Route path="/users/:userId" element={
+                            <ProtectedRoute>
+                                <Single />
+                            </ProtectedRoute>
+                        } />    
+                        <Route
+                            path="/users/new"
+                            element={
+                                <ProtectedRoute>
+                                    <New inputs={userInputs} title="Add New User" />
+                                </ProtectedRoute>                                
+                            }
+                        />         
+                    </Routes>
+                </BrowserRouter>
+                <ToastContainer />
+            </div>
+        </>
+    );
 }
 
 export default App;
